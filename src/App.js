@@ -3,24 +3,27 @@ import { FaSearch } from "react-icons/fa";
 import Photo from "./Photo";
 // lesson 194/195/196/197/198/
 // but now no funaction
-// const clientID = `?client_id=${process.env.REACT_APP_ACCESS_KEY}`;
+const clientID = `?client_id=${process.env.REACT_APP_ACCESS_KEY}`;
 const mainUrl = `https://api.unsplash.com/photos/`;
 const searchUrl = `https://api.unsplash.com/search/photos/`;
 
 function App() {
   const [loading, setLoading] = useState(false);
   const [photos, setPhotos] = useState([]);
-
+  const [page, setPage] = useState(1);
   const fetchImages = async () => {
     setLoading(true);
     let url;
-    // narazie wylaczylem bo niedzialo
+    const urlPage = `&page=${page}`;
+    // narazie wylaczylem bo niedzialo byla przerwa miedzy
     // url = `${mainUrl} ${clientID}`;
-    url = `${mainUrl}?client_id=h7w4EYZnlxTPjPeC1COxOUtQcQuxhLQyB2LBQX100Y0`;
+    url = `${mainUrl}${clientID}${urlPage}`;
     try {
       const response = await fetch(url);
       const data = await response.json();
-      setPhotos(data);
+      setPhotos((oldPhotos) => {
+        return [...oldPhotos, ...data];
+      });
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -30,12 +33,17 @@ function App() {
 
   useEffect(() => {
     fetchImages();
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     const event = window.addEventListener("scroll", () => {
-      if(!loading && window.innerHeight + window.scrollY >= document.body.scrollHeight -2 ){
-        console.log('it worked')
+      if (
+        !loading &&
+        window.innerHeight + window.scrollY >= document.body.scrollHeight - 2
+      ) {
+        setPage((oldPage) => {
+          return oldPage + 1;
+        });
       }
     });
     return () => window.removeEventListener("scroll", event);
