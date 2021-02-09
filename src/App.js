@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import Photo from "./Photo";
-// lesson 194/195/196/197
+// lesson 194/195/196/197/198/
 // but now no funaction
 // const clientID = `?client_id=${process.env.REACT_APP_ACCESS_KEY}`;
 const mainUrl = `https://api.unsplash.com/photos/`;
@@ -32,10 +32,19 @@ function App() {
     fetchImages();
   }, []);
 
-  const handleSubmit =(e)=>{
-    e.preventDefault()
-    console.log('hello')
-  }
+  useEffect(() => {
+    const event = window.addEventListener("scroll", () => {
+      if(!loading && window.innerHeight + window.scrollY >= document.body.scrollHeight -2 ){
+        console.log('it worked')
+      }
+    });
+    return () => window.removeEventListener("scroll", event);
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("hello");
+  };
   return (
     <main>
       <section className="search">
@@ -49,12 +58,12 @@ function App() {
 
       <section className="photos">
         <div className="photos-center">
-          {photos.map((image,index)=>{
+          {photos.map((image, index) => {
             // console.log(image)
-            return <Photo key={image.id} {...image}/>
+            return <Photo key={image.id} {...image} />;
           })}
         </div>
-        {loading && <h2 className='loading'>Loading...</h2>}
+        {loading && <h2 className="loading">Loading...</h2>}
       </section>
     </main>
   );
