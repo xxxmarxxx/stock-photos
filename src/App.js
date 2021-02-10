@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import Photo from "./Photo";
-// lesson 194/195/196/197/198/199/200/
+// lesson 194/195/196/197/198/199/200/201
 // but now no funaction
 const clientID = `?client_id=${process.env.REACT_APP_ACCESS_KEY}`;
 const mainUrl = `https://api.unsplash.com/photos/`;
@@ -10,7 +10,7 @@ const searchUrl = `https://api.unsplash.com/search/photos/`;
 function App() {
   const [loading, setLoading] = useState(false);
   const [photos, setPhotos] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [query, setQuery] = useState("");
 
   const fetchImages = async () => {
@@ -28,12 +28,14 @@ function App() {
     try {
       const response = await fetch(url);
       const data = await response.json();
-      console.log(data);
+
       setPhotos((oldPhotos) => {
-        if (query) {
+        if (query && page === 1) {
+          return data.results;
+        } else if (query) {
           return [...oldPhotos, ...data.results];
-        }else{
-          return [...oldPhotos, ...data]
+        } else {
+          return [...oldPhotos, ...data];
         }
       });
       setLoading(false);
@@ -63,7 +65,8 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetchImages();
+    setPage(1)
+    // fetchImages();
   };
   return (
     <main>
